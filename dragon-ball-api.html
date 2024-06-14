@@ -1,0 +1,102 @@
+<style>
+    .tr-db-race-btn,
+    #tr-container {
+        margin-top: 25px;
+        display: grid;        
+        grid-template-columns: repeat(3, 1fr);;
+        grid-gap: 10px;
+    }
+
+    .tr-db-race-btn button,
+    .tr-db-card-data {
+        padding: 15px;
+        font-family: Ubuntu;
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+
+    .tr-db-card-person {
+        border: 1px solid #CCC;
+        box-shadow: 0 3px 5px #000;
+    }
+
+    .tr-db-card-img {
+        text-align: center;
+    }
+
+    .tr-db-card-img img {
+        width: auto;
+        height: 300px;
+    }
+</style>
+
+<div class="tr-db-race-btn">
+    <button onclick="buscaPorRaca('Human')">HUMANOS</button>
+    <button onclick="buscaPorRaca('Saiyan')">SAYAJINS</button>
+    <button onclick="buscaPorRaca('Namekian')">NAMEKUSEIJINS</button>
+    <button onclick="buscaPorRaca('Majin')">MAJIN</button>
+    <button onclick="buscaPorRaca('Frieza Race')">FRIEZA</button>
+    <button onclick="buscaPorRaca('Android')">ANDROID</button>
+    <button onclick="buscaPorRaca('Jiren Race')">JIREN</button>
+    <button onclick="buscaPorRaca('God')">DEUSES</button>
+    <button onclick="buscaPorRaca('Angel')">ANJOS</button>    
+    <button onclick="buscaPorRaca('Nucleico')">SUPREMO SENHORES KAIOS</button>
+    <button onclick="buscaPorRaca('Nucleico benigno')">SENHORES KAIOS</button>
+    <button onclick="buscaPorRaca('Unknown')">DESCONHECIDO</button>
+</div>
+
+<div id="tr-container"></div>
+
+<script>
+    function buscaPorRaca(raca) {
+        let url = 'https://dragonball-api.com/api/characters?race='+ raca;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                limpaCard();
+                let trContainer = document.getElementById('tr-container');                
+                for(let i=0; i < data.length; i++) {
+                    //CRIA UMA DIV PARA CADA PERSONAGEM
+                    let trCardPerson = document.createElement('div');
+                    trCardPerson.classList.add('tr-db-card-person');
+                    trContainer.appendChild(trCardPerson);
+                    
+                    //CRIA A DIV PARA O NOME DO PERSONAGEM
+                    let cardName = document.createElement('div');
+                    cardName.classList.add('tr-db-card-data');
+                    cardName.textContent = data[i].name;
+                    trCardPerson.appendChild(cardName);
+
+                    //CRIA A DIV PARA A IMAGEM DO PERSONAGEM
+                    let divCardImg = document.createElement('div');
+                    divCardImg.classList.add('tr-db-card-img');
+                    trCardPerson.appendChild(divCardImg);
+
+                    //INSERE A IMAGEM DO PERSONAGEM NA DIV
+                    let cardImg = document.createElement('img');
+                    cardImg.setAttribute('src', data[i].image);
+                    cardImg.setAttribute('alt', data[i].name);
+                    divCardImg.appendChild(cardImg);
+
+                    //CRIA A DIV PARA O KI DO PERSONAGEM
+                    let cardKi = document.createElement('div');
+                    cardKi.classList.add('tr-db-card-data');
+                    cardKi.textContent = "KI: " + data[i].ki;
+                    trCardPerson.appendChild(cardKi);
+
+                    //CRIA A DIV PARA O MAXKI DO PERSONAGEM
+                    let cardMaxKi = document.createElement('div');
+                    cardMaxKi.classList.add('tr-db-card-data');
+                    cardMaxKi.textContent = "MAX KI: " + data[i].maxKi;
+                    trCardPerson.appendChild(cardMaxKi);
+                    
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
+    function limpaCard() {
+        let cards = document.querySelectorAll('.tr-db-card-person');
+        cards.forEach(card => card.remove());
+    }
+</script>
